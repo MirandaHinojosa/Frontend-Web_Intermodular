@@ -1,0 +1,116 @@
+<!-- home.html - Versión corregida con menú completo -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cine API - Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/chat.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h3 id="currentUserName"></h3>
+                <span id="userRoleBadge" class="role-badge"></span>
+            </div>
+            
+            <ul class="menu">
+                <!-- Dashboard - siempre visible -->
+                <li class="menu-item">
+                    <a href="home.html" class="menu-link">
+                        <i class="fas fa-home"></i> Dashboard
+                    </a>
+                </li>
+                
+                <!-- Cartelera (Público) - siempre visible -->
+                <li class="menu-item">
+                    <a href="peliculas-listar.html" class="menu-link">
+                        <i class="fas fa-film"></i> Cartelera
+                    </a>
+                </li>
+                
+                <!-- Comprar Boletos (Público) - siempre visible -->
+                <li class="menu-item">
+                    <a href="comprar-boletos.html" class="menu-link">
+                        <i class="fas fa-ticket-alt"></i> Comprar Boletos
+                    </a>
+                </li>
+                
+                <!-- Mis Boletos (Público) - siempre visible -->
+                <li class="menu-item">
+                    <a href="mis-boletos.html" class="menu-link">
+                        <i class="fas fa-receipt"></i> Mis Boletos
+                    </a>
+                </li>
+                
+                <!-- SECCIÓN ADMIN - Estas opciones se ocultarán con CSS/JS si no es admin -->
+                <li class="menu-item admin-only">
+                    <a href="peliculas.html" class="menu-link">
+                        <i class="fas fa-film"></i> Gestión Películas
+                    </a>
+                </li>
+                
+                <li class="menu-item admin-only">
+                    <a href="salas.html" class="menu-link">
+                        <i class="fas fa-door-closed"></i> Salas
+                    </a>
+                </li>
+                
+                <li class="menu-item admin-only">
+                    <a href="asiento.html" class="menu-link">
+                        <i class="fas fa-chair"></i> Asientos
+                    </a>
+                </li>
+                
+                <li class="menu-item admin-only">
+                    <a href="sesiones.html" class="menu-link">
+                        <i class="fas fa-clock"></i> Sesiones
+                    </a>
+                </li>
+                
+                <li class="menu-item admin-only">
+                    <a href="boletos.html" class="menu-link">
+                        <i class="fas fa-ticket-alt"></i> Boletos (Admin)
+                    </a>
+                </li>
+                
+                <!-- Cerrar Sesión - siempre visible -->
+                <li class="menu-item">
+                    <a href="#" class="menu-link" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1>Dashboard</h1>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </button>
+            </div>
+            
+            <!-- Contenido dinámico del dashboard -->
+            <div id="dynamicContent" class="content-placeholder">
+                <h2>Bienvenido al Sistema de Gestión de Cine</h2>
+                <p>Selecciona una opción del menú para comenzar.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/api.js"></script>
+    <script src="js/layout.js"></script>
+    
+    <script src="js/home-fixed.js"></script>
+</body>
+</html>

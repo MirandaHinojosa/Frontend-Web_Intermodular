@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cartelera de Películas</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/chat.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body onload="initPeliculasListar()">
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-film"></i> Cartelera de Películas</h1>
+            <a href="home.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Volver al Dashboard
+            </a>
+        </div>
+        
+        <div class="filter-container">
+            <div class="filter-group">
+                <select id="filterGenero" class="filter-select" onchange="filterMovies()">
+                    <option value="">Todos los géneros</option>
+                    <option value="Acción">Acción</option>
+                    <option value="Aventura">Aventura</option>
+                    <option value="Comedia">Comedia</option>
+                    <option value="Drama">Drama</option>
+                    <option value="Ciencia Ficción">Ciencia Ficción</option>
+                </select>
+                
+                <select id="filterEstado" class="filter-select" onchange="filterMovies()">
+                    <option value="">Todos los estados</option>
+                    <option value="true">Activas</option>
+                    <option value="false">Inactivas</option>
+                </select>
+            </div>
+        </div>
+        
+        <div id="moviesContainer" class="movies-grid">
+            <!-- Las películas se cargarán aquí -->
+        </div>
+        
+        <div id="noMovies" class="no-movies" style="display: none;">
+            <p>No hay películas disponibles en este momento.</p>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/layout.js"></script>
+    <script>
+        let allMovies = [];
+        
+        function initPeliculasListar() {
+            checkAuth();
+            loadMovies();
+        }
+        
+        async function loadMovies() {
+            const container = document.getElementById('moviesContainer');
+            container.innerHTML = '<p style="text-align: center;">Cargando películas...</p>';
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/pelicula/listar`, {
+                    method: 'GET',
+                    headers: getHeaders()
+                });
+                
+                checkTokenExpired(response);
+                
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.status}`);
+                }
+                
+                allMovies = await response.json();
+                renderMovies(allMovies);
+                
+            } catch (error) {
+                console.error('Error cargando películas:', error);
+                container.innerHTML = `<p style="text-align: center; color: red;">${error.message}</p>`;
+            }
+        }
+        
+        function renderMovies(movies) {
+            const container = document.getElementById('moviesContainer');
+            const noMovies = document.getElementById('noMovies');
+            
+            if (!movies || movies.length === 0) {
+                container.innerHTML = '';
+                noMovies.style.display = 'block';
+                return;
+            }
+            
+            noMovies.style.display = 'none';
+            container.innerHTML = '';
+            
+            // Filtrar solo películas activas para usuarios normales
+            const filteredMovies = userRole === 'ADMIN' ? 
+                movies : 
+                movies.filter(m => m.estado === true);
+            
+            filteredMovies.forEach(movie => {
+                const movieCard = document.createElement('div');
+                movieCard.className = 'movie-card';
+                
+                // Formatear fecha
+                const fecha = movie.fecha_publicacion ? 
+                    new Date(movie.fecha_publicacion).toLocaleDateString('es-ES', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    }) : 
+                    'Fecha no especificada';
+                
+                movieCard.innerHTML = `
+                    <div class="movie-header">
+                        <div class="movie-title">
+                            ${movie.titulo || 'Sin título'}
+                            <span class="status-badge ${movie.estado ? 'status-active' : 'status-inactive'}">
+                                ${movie.estado ? 'ACTIVA' : 'INACTIVA'}
+                            </span>
+                        </div>
+                        <div class="movie-info">
+                            ${movie.duracion_minutos ? `Duración: ${movie.duracion_minutos} min` : ''}
+                            ${movie.clasificacion ? ` | ${movie.clasificacion}` : ''}
+                        </div>
+                    </div>
+                    <div class="movie-body">
+                        <p class="movie-description">
+                            ${movie.descripcion || 'Sin descripción disponible.'}
+                        </p>
+                        <div class="movie-details">
+                            ${movie.genero ? `<div><strong>Género:</strong> ${movie.genero}</div>` : ''}
+                            <div><strong>Publicación:</strong> ${fecha}</div>
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(movieCard);
+            });
+        }
+        
+        function filterMovies() {
+            const genero = document.getElementById('filterGenero').value;
+            const estado = document.getElementById('filterEstado').value;
+            
+            let filtered = allMovies;
+            
+            if (genero) {
+                filtered = filtered.filter(movie => movie.genero === genero);
+            }
+            
+            if (estado) {
+                filtered = filtered.filter(movie => movie.estado === (estado === 'true'));
+            }
+            
+            renderMovies(filtered);
+        }
+    </script>
+</body>
+</html>

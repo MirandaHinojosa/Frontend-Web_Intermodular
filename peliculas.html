@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Películas</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/chat.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+</head>
+<body onload="initPeliculas()">
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-film"></i> Gestión de Películas</h1>
+            <a href="home.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Volver al Dashboard
+            </a>
+        </div>
+        
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+        
+        <div class="actions">
+            <button class="btn btn-primary" onclick="openModal('create')">
+                <i class="fas fa-plus"></i> Nueva Película
+            </button>
+            <button class="btn btn-secondary" onclick="refreshMovies()">
+                <i class="fas fa-sync-alt"></i> Actualizar
+            </button>
+        </div>
+        
+        <div class="table-responsive">
+            <table id="moviesTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Título</th>
+                        <th>Duración</th>
+                        <th>Clasificación</th>
+                        <th>Género</th>
+                        <th>Estado</th>
+                        <th>Fecha Publicación</th>
+                        <th>Imagen</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="moviesTableBody">
+                    <!-- Las películas se cargarán aquí -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Modal para crear/editar película -->
+        <div id="movieModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modalTitle">Nueva Película</h2>
+                    <button class="close-btn" onclick="closeModal()">&times;</button>
+                </div>
+                <form id="movieForm" onsubmit="saveMovie(event)">
+                    <input type="hidden" id="movieId">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="titulo">Título *</label>
+                            <input type="text" id="titulo" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="duracion_minutos">Duración (minutos) *</label>
+                            <input type="text" id="duracion_minutos" class="form-control" required min="1">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="clasificacion">Clasificación</label>
+                            <select id="clasificacion" class="form-control">
+                                <option value="">Seleccionar</option>
+                                <option value="G">G - Todo público</option>
+                                <option value="PG">PG - Guía parental</option>
+                                <option value="PG-13">PG-13 - Mayores de 13</option>
+                                <option value="R">R - Restringido</option>
+                                <option value="NC-17">NC-17 - Solo adultos</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="genero">Género</label>
+                            <select id="genero" class="form-control">
+                                <option value="">Seleccionar</option>
+                                <option value="Acción">Acción</option>
+                                <option value="Aventura">Aventura</option>
+                                <option value="Comedia">Comedia</option>
+                                <option value="Drama">Drama</option>
+                                <option value="Ciencia Ficción">Ciencia Ficción</option>
+                                <option value="Terror">Terror</option>
+                                <option value="Romance">Romance</option>
+                                <option value="Animación">Animación</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fecha_publicacion">Fecha de Publicación</label>
+                            <input type="date" id="fecha_publicacion" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="estado">Estado</label>
+                            <select id="estado" class="form-control">
+                                <option value="true">Activo</option>
+                                <option value="false">Inactivo</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="imagen">URL de la Imagen</label>
+                        <input type="url" id="imagen" class="form-control" placeholder="https://ejemplo.com/imagen.jpg">
+                        <small style="color: #666; display: block; margin-top: 5px;">URL completa de la imagen (opcional)</small>
+                    </div>
+
+                    <!-- Vista previa de la imagen -->
+                    <div id="imagePreviewContainer" style="margin-bottom: 20px; display: none;">
+                        <label>Vista Previa:</label>
+                        <div style="margin-top: 10px; text-align: center; border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
+                            <img id="imagePreview" src="" alt="Vista previa" style="max-width: 200px; max-height: 200px; object-fit: contain;">
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: right; margin-top: 20px;">
+                        <button type="button" class="btn" onclick="closeModal()" style="margin-right: 10px;">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Modal de confirmación para eliminar -->
+        <div id="confirmModal" class="modal">
+            <div class="modal-content" style="max-width: 400px;">
+                <h2>Confirmar Eliminación</h2>
+                <p id="confirmMessage">¿Estás seguro de que quieres eliminar esta película?</p>
+                <div style="text-align: right; margin-top: 20px;">
+                    <button type="button" class="btn" onclick="closeConfirmModal()" style="margin-right: 10px;">
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="confirmDelete()">
+                        Eliminar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/layout.js"></script>
+
+    <script src="js/peliculas.js"></script>
+    
+</body>
+</html>

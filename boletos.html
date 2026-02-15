@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Venta de Boletos - Cine API</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/chat.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+</head>
+<body">
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1><i class="fas fa-ticket-alt"></i> Venta de Boletos</h1>
+                <p>Gestiona la venta, reserva y cancelación de boletos</p>
+            </div>
+            <div class="header-actions">
+                <a href="home.html" class="back-btn">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+            </div>
+        </div>
+        
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+        
+        <!-- Estadísticas -->
+        <div class="stats-cards">
+            <div class="stat-card">
+                <div class="stat-value" id="totalBoletos">0</div>
+                <div class="stat-title">Total Boletos</div>
+            </div>
+            <div class="stat-card warning">
+                <div class="stat-value" id="boletosPagados">0</div>
+                <div class="stat-title">Pagados</div>
+            </div>
+            <div class="stat-card success">
+                <div class="stat-value" id="boletosReservados">0</div>
+                <div class="stat-title">Reservados</div>
+            </div>
+            <div class="stat-card danger">
+                <div class="stat-value" id="boletosCancelados">0</div>
+                <div class="stat-title">Cancelados</div>
+            </div>
+        </div>
+        
+        <div class="actions">
+            <button class="btn btn-primary" onclick="openModalNuevoBoleto()">
+                <i class="fas fa-plus"></i> Nuevo Boleto
+            </button>
+            <button class="btn btn-secondary" onclick="refreshBoletos()">
+                <i class="fas fa-sync-alt"></i> Actualizar
+            </button>
+            <button class="btn btn-info admin-only" onclick="exportarBoletos()" id="btnExportar">
+                <i class="fas fa-file-export"></i> Exportar
+            </button>
+        </div>
+        
+        <!-- Filtros -->
+        <div class="filter-section">
+            <h3><i class="fas fa-filter"></i> Filtros</h3>
+            <div class="filter-row">
+                <div class="filter-group">
+                    <label>Estado:</label>
+                    <select id="filterEstado" class="form-control" onchange="aplicarFiltros()">
+                        <option value="">Todos</option>
+                        <option value="PAGADO">Pagado</option>
+                        <option value="RESERVADO">Reservado</option>
+                        <option value="CANCELADO">Cancelado</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Tipo de Entrada:</label>
+                    <select id="filterTipoEntrada" class="form-control" onchange="aplicarFiltros()">
+                        <option value="">Todos</option>
+                        <option value="ADULTO">Adulto</option>
+                        <option value="MENOR">Menor</option>
+                        <option value="ESTUDIANTE">Estudiante</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Fecha:</label>
+                    <input type="date" id="filterFecha" class="form-control" onchange="aplicarFiltros()">
+                </div>
+                <div class="filter-group">
+                    <label>Sesión:</label>
+                    <select id="filterSesion" class="form-control" onchange="aplicarFiltros()">
+                        <option value="">Todas las sesiones</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Buscador -->
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Buscar por número de asiento, película o sala..." onkeyup="buscarBoletos()">
+            <i class="fas fa-search"></i>
+        </div>
+        
+        <!-- Tabla de boletos -->
+        <div class="table-responsive">
+            <table id="boletosTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Sesión</th>
+                        <th>Película</th>
+                        <th>Sala</th>
+                        <th>Asiento</th>
+                        <th>Fecha Compra</th>
+                        <th>Precio</th>
+                        <th>Tipo</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="boletosTableBody">
+                    <!-- Los boletos se cargarán aquí -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Paginación -->
+        <div class="pagination" id="paginationContainer">
+            <!-- Los botones de paginación se generarán aquí -->
+        </div>
+        
+        <!-- Modal para crear/editar boleto -->
+        <div id="boletoModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modalTitle">Nuevo Boleto</h2>
+                    <button class="close-btn" onclick="closeModal()">&times;</button>
+                </div>
+                <form id="boletoForm" onsubmit="saveBoleto(event)">
+                    <input type="hidden" id="boletoId">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="sesionId">Sesión *</label>
+                            <select id="sesionId" class="form-control" required onchange="cargarSesionInfo()">
+                                <option value="">Seleccionar sesión</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="tipoEntrada">Tipo de Entrada *</label>
+                            <select id="tipoEntrada" class="form-control" required onchange="calcularPrecio()">
+                                <option value="">Seleccionar</option>
+                                <option value="ADULTO">Adulto</option>
+                                <option value="MENOR">Menor</option>
+                                <option value="ESTUDIANTE">Estudiante</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="estadoBoleto">Estado *</label>
+                            <select id="estadoBoleto" class="form-control" required>
+                                <option value="RESERVADO">Reservado</option>
+                                <option value="PAGADO">Pagado</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="precioPagado">Precio *</label>
+                            <input type="number" id="precioPagado" class="form-control" step="0.01" min="0" required>
+                        </div>
+                    </div>
+                    
+                    <!-- Información de la sesión -->
+                    <div id="sesionInfo" style="display: none; background: #f0f9ff; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                        <h4><i class="fas fa-info-circle"></i> Información de la Sesión</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <strong>Película:</strong> <span id="peliculaInfo">-</span><br>
+                                <strong>Fecha:</strong> <span id="fechaSesionInfo">-</span>
+                            </div>
+                            <div class="form-group">
+                                <strong>Sala:</strong> <span id="salaInfo">-</span><br>
+                                <strong>Hora:</strong> <span id="horaSesionInfo">-</span>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <strong>Precio Base:</strong> $<span id="precioBaseInfo">0.00</span><br>
+                                <strong>Asientos Disponibles:</strong> <span id="asientosDisponiblesInfo">0</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Selección de asientos -->
+                    <div class="form-group">
+                        <label for="numeroAsiento">Asiento *</label>
+                        <div id="asientosContainer" style="display: none;">
+                            <div class="seat-grid" id="seatGrid">
+                                <!-- Los asientos se cargarán aquí -->
+                            </div>
+                            <div class="seat-info">
+                                <div class="seat-legend">
+                                    <div class="legend-item">
+                                        <div class="legend-color" style="background: #c6f6d5;"></div>
+                                        <span>Disponible</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <div class="legend-color" style="background: #fed7d7;"></div>
+                                        <span>Ocupado</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <div class="legend-color" style="background: #90cdf4;"></div>
+                                        <span>Seleccionado</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <strong>Asiento seleccionado:</strong> <span id="selectedSeatInfo">Ninguno</span>
+                                </div>
+                            </div>
+                            <input type="hidden" id="numeroAsiento" required>
+                        </div>
+                        <div id="noAsientosMessage" style="display: none; color: #e53e3e; padding: 10px; background: #fed7d7; border-radius: 5px;">
+                            <i class="fas fa-exclamation-triangle"></i> No hay asientos disponibles para esta sesión
+                        </div>
+                    </div>
+                    
+                    <!-- Cálculo de precio -->
+                    <div class="price-calculation" id="priceCalculation" style="display: none;">
+                        <h4><i class="fas fa-calculator"></i> Cálculo de Precio</h4>
+                        <div class="price-row">
+                            <span>Precio base:</span>
+                            <span>$<span id="basePrice">0.00</span></span>
+                        </div>
+                        <div class="price-row">
+                            <span>Tipo de entrada (<span id="tipoEntradaText">-</span>):</span>
+                            <span><span id="discountText">0%</span> descuento</span>
+                        </div>
+                        <div class="price-row price-total">
+                            <span>Total a pagar:</span>
+                            <span>$<span id="totalPrice">0.00</span></span>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: right; margin-top: 20px;">
+                        <button type="button" class="btn" onclick="closeModal()" style="margin-right: 10px;">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            Guardar Boleto
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Modal de confirmación para eliminar/cancelar -->
+        <div id="confirmModal" class="modal">
+            <div class="modal-content" style="max-width: 400px;">
+                <h2 id="confirmTitle">Confirmar Acción</h2>
+                <p id="confirmMessage">¿Estás seguro de que quieres realizar esta acción?</p>
+                <div style="text-align: right; margin-top: 20px;">
+                    <button type="button" class="btn" onclick="closeConfirmModal()" style="margin-right: 10px;">
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn btn-danger" id="confirmActionBtn" onclick="executeConfirmAction()">
+                        Confirmar
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal de detalles del boleto -->
+        <div id="detailModal" class="modal">
+            <div class="modal-content" style="max-width: 600px;">
+                <div class="modal-header">
+                    <h2><i class="fas fa-ticket-alt"></i> Detalles del Boleto</h2>
+                    <button class="close-btn" onclick="closeDetailModal()">&times;</button>
+                </div>
+                <div class="modal-body" id="detailModalBody">
+                    <!-- Los detalles se cargarán aquí -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/layout.js"></script>
+
+    <script src="js/boletos.js"></script>
+</body>
+</html>

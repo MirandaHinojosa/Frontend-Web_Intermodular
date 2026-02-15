@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprar Boletos - Cine API</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/chat.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+   
+</head>
+<body>
+    <!-- El layout se cargará automáticamente -->
+    <div class="comprar-container" id="comprarContainer">
+        <div class="page-header">
+            <h1><i class="fas fa-ticket-alt"></i> Comprar Boletos</h1>
+        </div>
+        
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+        
+        <!-- Filtros -->
+        <div class="filtros-section">
+            <h3><i class="fas fa-filter"></i> Filtrar Sesiones</h3>
+            <div class="filtros-grid">
+                <div>
+                    <label>Fecha:</label>
+                    <input type="date" id="filtroFecha" class="form-control">
+                </div>
+                <div>
+                    <label>Película:</label>
+                    <select id="filtroPelicula" class="form-control">
+                        <option value="">Todas</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Ordenar por:</label>
+                    <select id="ordenarPor" class="form-control">
+                        <option value="fecha">Fecha (más cercana)</option>
+                        <option value="precio">Precio (menor a mayor)</option>
+                    </select>
+                </div>
+                <div>
+                    <button class="btn btn-primary" onclick="aplicarFiltros()" style="margin-top: 24px;">
+                        <i class="fas fa-search"></i> Buscar
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Lista de sesiones -->
+        <div id="sesionesContainer" class="sesiones-grid">
+            <!-- Se cargará dinámicamente -->
+        </div>
+    </div>
+
+    <!-- Modal de compra -->
+    <div id="compraModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Comprar Boleto</h2>
+                <button class="close-btn" onclick="cerrarModalCompra()">&times;</button>
+            </div>
+            
+            <div id="sesionInfo" style="background: #f8fafc; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                <!-- Info de la sesión se cargará aquí -->
+            </div>
+            
+            <div class="seat-legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #c6f6d5;"></div>
+                    <span>Disponible</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #fed7d7;"></div>
+                    <span>Ocupado</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background: #90cdf4;"></div>
+                    <span>Seleccionado</span>
+                </div>
+            </div>
+            
+            <div id="seatGrid" class="seat-grid">
+                <!-- Los asientos se cargarán aquí -->
+            </div>
+            
+            <div class="tipo-entrada-selector">
+                <button class="tipo-entrada-btn selected" onclick="seleccionarTipoEntrada('ADULTO')" id="tipoADULTO">
+                    <i class="fas fa-user"></i> Adulto
+                </button>
+                <button class="tipo-entrada-btn" onclick="seleccionarTipoEntrada('MENOR')" id="tipoMENOR">
+                    <i class="fas fa-child"></i> Menor
+                </button>
+                <button class="tipo-entrada-btn" onclick="seleccionarTipoEntrada('ESTUDIANTE')" id="tipoESTUDIANTE">
+                    <i class="fas fa-graduation-cap"></i> Estudiante
+                </button>
+            </div>
+            
+            <div class="resumen-compra">
+                <div class="info-row">
+                    <span>Precio base:</span>
+                    <span>$<span id="precioBase">0.00</span></span>
+                </div>
+                <div class="info-row">
+                    <span>Descuento (<span id="tipoDescuento">Adulto</span>):</span>
+                    <span><span id="descuentoPorcentaje">0%</span></span>
+                </div>
+                <div class="info-row" style="font-size: 20px; font-weight: bold; border-bottom: none;">
+                    <span>Total a pagar:</span>
+                    <span>$<span id="totalPagar">0.00</span></span>
+                </div>
+            </div>
+            
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                <button class="btn" onclick="cerrarModalCompra()">Cancelar</button>
+                <button class="btn btn-primary" onclick="confirmarCompra()" id="btnConfirmarCompra">
+                    <i class="fas fa-shopping-cart"></i> Comprar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/layout.js"></script>
+    <script src="js/comprar-boletos.js"></script>
+</body>
+</html>

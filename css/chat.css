@@ -1,0 +1,895 @@
+/* =============================================
+   chat.css - ESTILOS COMPLETOS PARA EL CHAT
+   Versión Corregida con Panel de Soporte Compacto
+   ============================================= */
+
+/* Widget principal */
+.chat-widget {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+/* Botón flotante */
+.chat-toggle-btn {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 24px;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.chat-toggle-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+}
+
+/* Badge de notificaciones */
+.chat-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #e53e3e;
+    color: white;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Contenedor del chat */
+.chat-container {
+    width: 380px;
+    height: 550px;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    bottom: 70px;
+    right: 0;
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+}
+
+/* Header del chat */
+.chat-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.chat-header h4 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.chat-close-btn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 20px;
+    padding: 5px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.3s;
+}
+
+.chat-close-btn:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+/* Estados de conexión */
+.chat-status {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.chat-status.online { 
+    background: #34d399; 
+    box-shadow: 0 0 10px #34d399;
+}
+
+.chat-status.offline { 
+    background: #9ca3af; 
+}
+
+.chat-status.connecting { 
+    background: #fbbf24; 
+    animation: pulse 1.5s infinite; 
+}
+
+/* =============================================
+   ÁREA DE MENSAJES - CORREGIDO CON FLEXBOX
+   ============================================= */
+.chat-messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    background: #f9fafb;
+    display: flex;
+    flex-direction: column;
+}
+
+/* =============================================
+   ESTILOS DE MENSAJES - CORREGIDO
+   ============================================= */
+.message {
+    margin-bottom: 12px;
+    max-width: 80%;
+    word-wrap: break-word;
+    animation: fadeIn 0.3s ease;
+    padding: 10px 15px;
+    border-radius: 18px;
+    position: relative;
+    line-height: 1.4;
+    display: block;
+    clear: both;
+}
+
+/* MENSAJES DEL ADMIN (los que ENVÍA el admin) - AZUL, DERECHA */
+.message.admin {
+    background: #0084ff;
+    color: white;
+    align-self: flex-end;
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
+    border-top-right-radius: 18px;
+    border-top-left-radius: 18px;
+    border-bottom-left-radius: 18px;
+}
+
+/* MENSAJES DEL USUARIO (los que RECIBE el admin) - GRIS, IZQUIERDA */
+.message.other {
+    background: #e4e6eb;
+    color: #050505;
+    align-self: flex-start;
+    margin-right: auto;
+    border-bottom-left-radius: 4px;
+    border-top-right-radius: 18px;
+    border-top-left-radius: 18px;
+    border-bottom-right-radius: 18px;
+}
+
+/* MENSAJES PROPIOS (cuando el usuario ve SUS mensajes) */
+.message.own {
+    background: #0084ff;
+    color: white;
+    align-self: flex-end;
+    margin-left: auto;
+    border-bottom-right-radius: 4px;
+    border-top-right-radius: 18px;
+    border-top-left-radius: 18px;
+    border-bottom-left-radius: 18px;
+}
+
+/* MENSAJES AUTOMÁTICOS */
+.message.auto {
+    background: #fff3cd;
+    border: 1px solid #ffeeba;
+    color: #856404;
+    align-self: center;
+    margin: 10px auto;
+    max-width: 90%;
+    font-style: italic;
+    border-radius: 18px;
+}
+
+/* MENSAJES DEL SISTEMA */
+.message.system {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    color: #6c757d;
+    align-self: center;
+    margin: 10px auto;
+    max-width: 80%;
+    text-align: center;
+    font-style: italic;
+    border-radius: 18px;
+}
+
+/* NOMBRE DEL REMITENTE */
+.message-sender {
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.message.other .message-sender {
+    color: #65676b;
+}
+
+.message.admin .message-sender,
+.message.own .message-sender {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* CONTENIDO DEL MENSAJE */
+.message-content {
+    font-size: 14px;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+/* HORA DEL MENSAJE */
+.message-time {
+    font-size: 11px;
+    margin-top: 5px;
+    text-align: right;
+}
+
+.message.other .message-time {
+    color: #65676b;
+}
+
+.message.admin .message-time,
+.message.own .message-time {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.message.auto .message-time,
+.message.system .message-time {
+    color: #6c757d;
+}
+
+/* =============================================
+   PANEL DE ADMIN (CORREGIDO - VERSIÓN COMPACTA)
+   ============================================= */
+.admin-panel {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    border-top: 2px solid #e5e7eb;
+    background: white;
+}
+
+/* Cabecera de usuarios activos */
+.admin-chat-section {
+    padding: 15px;
+    border-bottom: 1px solid #e5e7eb;
+    background: #f8fafc;
+}
+
+.admin-chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.admin-chat-header h5 {
+    margin: 0;
+    font-size: 15px;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+}
+
+.admin-chat-header h5 i {
+    color: #667eea;
+}
+
+.btn-refresh {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 6px 10px;
+    color: #4a5568;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-refresh:hover {
+    background: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+/* =============================================
+   LISTA DE USUARIOS ACTIVOS - VERSIÓN COMPACTA
+   ============================================= */
+.active-users-list {
+    max-height: 200px;
+    overflow-y: auto;
+    border-radius: 8px;
+}
+
+/* Estilo para las tarjetas de usuario, más pequeño y compacto */
+.user-item {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 8px 12px; /* Reducido de 12px a 8px */
+    margin-bottom: 6px; /* Reducido de 8px a 6px */
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-item:hover {
+    background: #f1f5f9;
+    border-color: #94a3b8;
+}
+
+.user-item.selected {
+    background: #667eea;
+    border-color: #667eea;
+}
+
+.user-info {
+    display: flex;
+    gap: 10px; /* Reducido de 12px a 10px */
+    flex: 1;
+}
+
+.user-avatar-small {
+    width: 35px; /* Reducido de 45px a 35px */
+    height: 35px; /* Reducido de 45px a 35px */
+    background: #e2e8f0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4a5568;
+    font-size: 18px; /* Reducido de 24px a 18px */
+}
+
+.user-item.selected .user-avatar-small {
+    background: rgba(255,255,255,0.2);
+    color: white;
+}
+
+.user-details {
+    flex: 1;
+}
+
+.user-name-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 2px;
+}
+
+.user-name {
+    font-size: 14px; /* Reducido de 15px a 14px */
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.user-item.selected .user-name {
+    color: white;
+}
+
+.user-email {
+    font-size: 11px; /* Reducido de 12px a 11px */
+    color: #64748b;
+    margin-bottom: 2px; /* Reducido de 4px a 2px */
+}
+
+.user-item.selected .user-email {
+    color: rgba(255,255,255,0.9);
+}
+
+.user-last-message {
+    font-size: 11px; /* Reducido de 12px a 11px */
+    color: #64748b;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-item.selected .user-last-message {
+    color: rgba(255,255,255,0.9);
+}
+
+.user-last-message small {
+    color: #94a3b8;
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.message-time {
+    font-size: 10px; /* Reducido de 11px a 10px */
+    color: #94a3b8;
+    margin-left: 8px;
+}
+
+/* Estadísticas de usuario */
+.user-stats {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+}
+
+.message-count {
+    background: #f1f5f9;
+    padding: 3px 8px; /* Reducido de 4px 10px */
+    border-radius: 20px;
+    font-size: 11px; /* Reducido de 13px a 11px */
+    font-weight: 600;
+    color: #1e293b;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.message-count i {
+    font-size: 11px; /* Reducido de 12px a 11px */
+    color: #667eea;
+}
+
+.user-item.selected .message-count {
+    background: rgba(255,255,255,0.2);
+    color: white;
+}
+
+/* Badge de mensajes no leídos */
+.unread-badge {
+    background: #e53e3e;
+    color: white;
+    border-radius: 50%;
+    min-width: 18px; /* Reducido de 22px */
+    height: 18px; /* Reducido de 22px */
+    padding: 0 4px; /* Reducido de 0 6px */
+    font-size: 10px; /* Reducido de 12px a 10px */
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    animation: pulse 2s infinite;
+}
+
+.new-message-indicator {
+    background: #48bb78;
+    color: white;
+    padding: 2px 6px; /* Reducido de 2px 8px */
+    border-radius: 12px;
+    font-size: 9px; /* Reducido de 10px a 9px */
+    font-weight: bold;
+    animation: pulse 1.5s infinite;
+}
+
+/* =============================================
+   SECCIÓN DE RESPUESTA ADMIN
+   ============================================= */
+.admin-reply-section {
+    padding: 15px;
+    background: white;
+    border-top: 1px solid #e5e7eb;
+}
+
+.admin-reply-section .form-group {
+    margin-bottom: 12px;
+}
+
+.admin-reply-section label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 6px;
+}
+
+.admin-reply-input {
+    width: 100%;
+    padding: 10px 12px !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 8px !important;
+    font-size: 14px !important;
+    background: #f8fafc !important;
+    color: #1e293b !important;
+}
+
+.admin-reply-input:focus {
+    border-color: #667eea !important;
+    outline: none !important;
+}
+
+.admin-message-input-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.admin-message-input-group input {
+    flex: 1;
+    padding: 12px 15px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.admin-message-input-group input:focus {
+    border-color: #667eea;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.btn-admin-send {
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+}
+
+.btn-admin-send:hover:not(:disabled) {
+    background: #5a67d8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* =============================================
+   INPUT DE USUARIO NORMAL
+   ============================================= */
+.chat-input-container {
+    display: flex;
+    padding: 15px;
+    border-top: 1px solid #e5e7eb;
+    gap: 10px;
+    background: white;
+    flex-shrink: 0;
+}
+
+.chat-input-container input {
+    flex: 1;
+    padding: 12px 15px;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.chat-input-container input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.chat-send-btn {
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    width: 45px;
+    height: 45px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.chat-send-btn:hover:not(:disabled) {
+    background: #5a67d8;
+    transform: scale(1.05);
+}
+
+/* =============================================
+   MENSAJE DE BIENVENIDA
+   ============================================= */
+.welcome-message {
+    background: #dbeafe;
+    border: 1px solid #93c5fd;
+    padding: 15px;
+    border-radius: 18px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.5;
+    align-self: center;
+    max-width: 90%;
+}
+
+.welcome-message p {
+    margin: 5px 0;
+}
+
+.welcome-message strong {
+    color: #1e40af;
+}
+
+.connection-info {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 8px;
+    font-style: italic;
+}
+
+/* =============================================
+   NUEVOS ESTILOS PARA EL PANEL DE SOPORTE (del index demo)
+   ============================================= */
+.support-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.support-header h1 {
+    font-size: 2rem;
+    font-weight: 500;
+}
+
+.support-header span {
+    color: #90caf9;
+    background: rgba(59,130,246,0.1);
+    padding: 0.3rem 1rem;
+    border-radius: 40px;
+    font-size: 0.9rem;
+}
+
+.support-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 2fr;
+    gap: 1.8rem;
+    margin-top: 1.5rem;
+}
+
+/* Lista de usuarios - MÁS PEQUEÑA */
+.users-section {
+    background: rgba(0,0,0,0.02);
+    border-radius: 1.8rem;
+    padding: 1.3rem;
+    border: 1px solid #e2e8f0;
+}
+
+.users-section h3 {
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #7f87a5;
+    margin-bottom: 1rem;
+}
+
+.user-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+/* Tarjeta de usuario compacta */
+.user-card {
+    background: #f8fafc;
+    border-radius: 1.2rem;
+    padding: 0.7rem 1rem;
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+    transition: 0.1s;
+}
+
+.user-card:hover {
+    background: #edf2f7;
+    border-color: #4b66a0;
+}
+
+.user-card .user-name {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.user-card .user-email {
+    font-size: 0.7rem;
+    color: #64748b;
+}
+
+.user-card .user-preview {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    margin-top: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Sección de respuesta */
+.reply-section {
+    background: rgba(0,0,0,0.02);
+    border-radius: 1.8rem;
+    padding: 1.5rem;
+    border: 1px solid #e2e8f0;
+}
+
+.reply-section h3 {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 1.2rem;
+    color: #1e293b;
+}
+
+.reply-field {
+    width: 100%;
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 1.2rem;
+    padding: 0.9rem 1.2rem;
+    color: #1e293b;
+    margin-bottom: 1rem;
+    outline: none;
+}
+
+.reply-field:focus {
+    border-color: #3b82f6;
+}
+
+select.reply-field {
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1rem;
+}
+
+/* Micro textos de conectando */
+.connecting {
+    color: #50c878;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+.connecting::before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    background: #50c878;
+    border-radius: 50%;
+    display: inline-block;
+    animation: pulse 1.5s infinite;
+}
+
+/* =============================================
+   ANIMACIONES
+   ============================================= */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+/* Scrollbar personalizado */
+.chat-messages::-webkit-scrollbar,
+.active-users-list::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-track,
+.active-users-list::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb,
+.active-users-list::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover,
+.active-users-list::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Estados de carga */
+.loading-users,
+.no-users {
+    text-align: center;
+    padding: 20px;
+    color: #64748b;
+    font-size: 14px;
+    background: white;
+    border-radius: 8px;
+    border: 1px dashed #cbd5e0;
+}
+
+.error-message {
+    background: #fed7d7;
+    color: #c53030;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    text-align: center;
+    margin: 10px;
+}
+
+/* =============================================
+   RESPONSIVE
+   ============================================= */
+@media (max-width: 768px) {
+    .chat-container {
+        width: 340px;
+        height: 500px;
+    }
+    
+    .user-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .user-stats {
+        flex-direction: row;
+        margin-top: 8px;
+        width: 100%;
+        justify-content: flex-end;
+    }
+
+    .support-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .chat-widget {
+        bottom: 15px;
+        right: 15px;
+    }
+    
+    .chat-container {
+        width: calc(100vw - 30px);
+        height: 450px;
+    }
+    
+    .admin-message-input-group {
+        flex-direction: column;
+    }
+    
+    .btn-admin-send {
+        width: 100%;
+        justify-content: center;
+    }
+}

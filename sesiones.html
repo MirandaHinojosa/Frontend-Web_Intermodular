@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administración de Sesiones</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="css/chat.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+</head>
+<body>
+    <div class="sesiones-admin-container">
+        <div class="page-header">
+            <h1><i class="fas fa-clock"></i> Administración de Sesiones</h1>
+            <button class="btn-crear" onclick="abrirModalCrear()">
+                <i class="fas fa-plus"></i> Nueva Sesión
+            </button>
+        </div>
+        
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+        
+        <!-- Filtros -->
+        <div class="filtros-section">
+            <h3><i class="fas fa-filter"></i> Filtrar Sesiones</h3>
+            <div class="filtros-grid">
+                <div>
+                    <label>Fecha:</label>
+                    <input type="date" id="filtroFecha" class="form-control">
+                </div>
+                <div>
+                    <label>Película:</label>
+                    <select id="filtroPelicula" class="form-control">
+                        <option value="">Todas</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Sala:</label>
+                    <select id="filtroSala" class="form-control">
+                        <option value="">Todas</option>
+                    </select>
+                </div>
+                <div>
+                    <button class="btn btn-primary" onclick="aplicarFiltros()" style="margin-top: 24px;">
+                        <i class="fas fa-search"></i> Buscar
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Lista de sesiones -->
+        <div id="sesionesContainer" class="sesiones-grid">
+            <!-- Se cargará dinámicamente -->
+        </div>
+    </div>
+    
+    <!-- Modal para crear/editar sesión -->
+    <div id="sesionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitulo">Nueva Sesión</h2>
+                <button class="close-btn" onclick="cerrarModal()">&times;</button>
+            </div>
+            
+            <form id="sesionForm" onsubmit="guardarSesion(event)">
+                <input type="hidden" id="sesionId">
+                
+                <div class="form-group">
+                    <label for="peliculaId">Película *</label>
+                    <select id="peliculaId" class="form-control" required>
+                        <option value="">Seleccionar película</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="salaId">Sala *</label>
+                    <select id="salaId" class="form-control" required>
+                        <option value="">Seleccionar sala</option>
+                    </select>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fecha">Fecha *</label>
+                        <input type="date" id="fecha" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="hora">Hora *</label>
+                        <input type="time" id="hora" class="form-control" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="precio">Precio *</label>
+                        <input type="number" id="precio" class="form-control" step="0.01" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="asientosDisponibles">Asientos disponibles</label>
+                        <input type="number" id="asientosDisponibles" class="form-control" min="0">
+                        <small>Dejar vacío para usar capacidad de la sala</small>
+                    </div>
+                </div>
+                
+                <div class="modal-footer">
+                    <button type="button" class="btn" onclick="cerrarModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal de confirmación -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h2>Confirmar Eliminación</h2>
+                <button class="close-btn" onclick="cerrarConfirmModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage">¿Estás seguro de eliminar esta sesión?</p>
+                <p><strong>Esta acción no se puede deshacer.</strong></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="cerrarConfirmModal()">Cancelar</button>
+                <button class="btn btn-danger" onclick="ejecutarEliminar()">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/layout.js"></script>
+    <script src="js/admin-sesiones.js"></script>
+</body>
+</html>

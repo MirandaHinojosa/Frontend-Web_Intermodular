@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cine API - Dashboard</title>
+    <link rel="stylesheet" href="css/styles.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+</head>
+<body>
+    <div class="login-container" id="loginContainer">
+        <div class="logo">
+            <i class="fas fa-film"></i>
+        </div>
+        
+        <div class="login-header">
+            <h1>Cine API Dashboard</h1>
+            <p>Ingresa tus credenciales para acceder</p>
+        </div>
+        
+        <!-- Mensajes de error/success -->
+        <div id="errorMessage" class="message error-message"></div>
+        <div id="successMessage" class="message success-message"></div>
+        
+        <!-- Formulario de login -->
+        <form id="loginForm" onsubmit="event.preventDefault(); login();">
+            <div class="form-group">
+                <label for="username">Usuario o Email</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-user"></i>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        placeholder="Ingresa tu usuario"
+                        autocomplete="username"
+                        required
+                    >
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Contraseña</label>
+                <div class="input-with-icon">
+                    <i class="fas fa-lock"></i>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        placeholder="Ingresa tu contraseña"
+                        autocomplete="current-password"
+                        required
+                    >
+                </div>
+            </div>
+            
+            <button type="submit" id="loginBtn" class="login-btn">
+                <i class="fas fa-sign-in-alt"></i> Ingresar
+            </button>
+        </form>
+        
+        <div class="footer">
+            <p>Sistema de Gestión de Cine</p>
+            
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    
+
+    <script>
+        // Si ya está autenticado, redirigir al dashboard
+        const jwToken = localStorage.getItem('jwtToken');
+        const jwcurrentUser = localStorage.getItem('currentUser');
+        
+        if (jwToken && jwcurrentUser) {
+            window.location.href = 'home.html';
+        }
+    </script>
+</body>
+</html>

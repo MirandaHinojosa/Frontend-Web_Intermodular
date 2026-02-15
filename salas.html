@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Salas</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/chat.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+</head>
+<body onload="initSala()">
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-film"></i> Gestión de Salas</h1>
+            <a href="home.html" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Volver al Dashboard
+            </a>
+        </div>
+        
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+        
+        <div class="actions">
+            <button class="btn btn-primary" onclick="openModal('create')">
+                <i class="fas fa-plus"></i> Nueva Salas
+            </button>
+            <button class="btn btn-secondary" onclick="refreshSala()">
+                <i class="fas fa-sync-alt"></i> Actualizar
+            </button>
+        </div>
+        
+        <div class="table-responsive">
+            <table id="salaTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Numero sala</th>
+                        <th>Capacidad</th>
+                        <th>Fila</th>
+                        <th>Columna</th>
+                        <th>Tipo sala</th>                        
+                        <th>Estado</th>                        
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="salaTableBody">
+                    <!-- Las películas se cargarán aquí -->
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Modal para crear/editar película -->
+        <div id="salaModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modalTitle">Nueva Sala</h2>
+                    <button class="close-btn" onclick="closeModal()">&times;</button>
+                </div>
+                <form id="salaForm" onsubmit="saveSala(event)">
+                    <input type="hidden" id="salaId">
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="numero">Número Sala *</label>
+                            <input type="text" id="numero" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="capacidad">Capacidad *</label>
+                            <input type="text" id="capacidad" class="form-control" required min="1">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fila">Filas*</label>
+                            <input type="text" id="fila" class="form-control" required min="1">
+                        </div>
+                        <div class="form-group">
+                            <label for="columna">Columna *</label>
+                            <input type="text" id="columna" class="form-control" required min="1">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="tipo">Tipo Sala</label>
+                            <select id="tipo" class="form-control">
+                                <option value="">Seleccionar</option>
+                                <option value="IMAX">IMAX</option>
+                                <option value="Dolby Cinema">Dolby Cinema</option>
+                                <option value="4DX">4DX</option>
+                                <option value="ScreenX">ScreenX</option>
+                                <option value="3D">3D</option>
+                            </select>
+                        </div>
+                
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="estado">Estado</label>
+                            <select id="estado" class="form-control">
+                                <option value="true">Activo</option>
+                                <option value="false">Inactivo</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    
+                    <div style="text-align: right; margin-top: 20px;">
+                        <button type="button" class="btn" onclick="closeModal()" style="margin-right: 10px;">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Modal de confirmación para eliminar -->
+        <div id="confirmModal" class="modal">
+            <div class="modal-content" style="max-width: 400px;">
+                <h2>Confirmar Eliminación</h2>
+                <p id="confirmMessage">¿Estás seguro de que quieres eliminar esta película?</p>
+                <div style="text-align: right; margin-top: 20px;">
+                    <button type="button" class="btn" onclick="closeConfirmModal()" style="margin-right: 10px;">
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="confirmDelete()">
+                        Eliminar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/layout.js"></script>
+    <script src="js/sala.js"></script>
+</body>
+</html>
